@@ -4,7 +4,7 @@
  * This is the class for monsters, manage the hero attributes and provide some necessary methods.
  */
 
-public class Monster {
+public class Monster extends LivingCreature {
     // class attributes
     public static final double DODGE_RATIO = 0.01;
     public static final int DAMAGE_REDUCTION = 10;

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MonstersAndHeroes {
+public class MonstersAndHeroes extends RPGGame {
     // attributes
     public static final int MIN_SIDE_LENGTH = 5;
     public static final int MAX_SIDE_LENGTH = 9;

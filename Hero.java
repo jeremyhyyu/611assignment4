@@ -7,7 +7,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Hero {
+public class Hero extends LivingCreature {
     // class variable
     public static final double AGILITY_TO_MISS = 0.0002;
     //attributes
