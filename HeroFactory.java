@@ -15,9 +15,12 @@ public class HeroFactory {
     private static List<String> warriorData = new ArrayList<>();
     private static List<String> sorcererData = new ArrayList<>();
     private static List<String> paladinData = new ArrayList<>();
+    private static boolean flag = false;
     public static final int TYPE_OF_HEROS = 3;
     // read the data from the file
     public static void initialize() {
+        // if already initialized then return
+        if(flag) return;
         // read warriors data
         String filePath = "./Legends_Monsters_and_Heroes/Warriors.txt";
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -63,6 +66,8 @@ public class HeroFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // update the flag
+        flag = true;
     }
     // create a hero of a type
     public static Hero selectAHeroByType(String type, int index) {

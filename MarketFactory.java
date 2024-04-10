@@ -18,8 +18,10 @@ public class MarketFactory {
     private static List<String> fireSpellData = new ArrayList<>();
     private static List<String> iceSpellData = new ArrayList<>();
     private static List<String> lightningSpellData = new ArrayList<>();
+    private static boolean flag = false;
     // read data from files
     public static void initialize() {
+        if(flag) return;
         // read armorss data
         String filePath = "./Legends_Monsters_and_Heroes/Armory.txt";
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -110,6 +112,7 @@ public class MarketFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        flag = true;
     }
     // generate a random list of 6 items
     public static List<Item> getAListOfItems() {

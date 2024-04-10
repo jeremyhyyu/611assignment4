@@ -15,8 +15,10 @@ public class MonsterFactory {
     private static List<String> dragonData = new ArrayList<>();
     private static List<String> exoskeletonData = new ArrayList<>();
     private static List<String> spiritData = new ArrayList<>();
+    private static boolean flag = false;
     // read the data from the database
     public static void initialize() {
+        if(flag) return;
         // read dragons data
         String filePath = "./Legends_Monsters_and_Heroes/Dragons.txt";
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -62,6 +64,7 @@ public class MonsterFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        flag = true;
     }
     // generate random monster based on hero level (monster level <= hero level)
     public static Monster generateMonsterByHeroLevel(int level) {
