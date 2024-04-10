@@ -12,6 +12,7 @@ public class Spell extends Item {
     private int damage;
     private int cost;
     private Monster target;
+    private UseBehavior useBehavior;
 
     // constructor
     public Spell(String name, int price, int level, int damage, int cost) {
@@ -30,9 +31,13 @@ public class Spell extends Item {
     public Monster getTarget() {
         return target;
     }
+    public UseBehavior getUseBehavior() {
+        return useBehavior;
+    }
     // setters
     public void setTarget(Monster target) {
         this.target = target;
+        useBehavior = new UseByCast(this, target);
     }
 
     // display
@@ -42,6 +47,6 @@ public class Spell extends Item {
     // implement usable
     public void use(Hero hero) {
         // default use
-        System.out.println("Hero " + hero.getAttribute().getName() + "casted a spell");
+        useBehavior.use(hero);
     }
 }

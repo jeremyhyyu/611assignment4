@@ -1,18 +1,20 @@
 /*
  * Potion.java
  * By Heyang Yu(jhyyu@bu.edu)
- * This is the class for potions, heroes can drink potions to gain attributes.
+ * This is the class for potions, heroes can drink potions to gain attributes, strategy pattern is implemented here to extract behavior from this class.
  */
 
-public class Potion extends Item implements Usable {
+public class Potion extends Item {
     // attributes
     private int increase;
     private String attributesAffected;
-    //constructor
+    private UseBehavior useBehavior;
+    // constructor
     public Potion(String name, int price, int level, int increase, String attributesAffected) {
         super(name, price, level);
         this.increase = increase;
         this.attributesAffected = attributesAffected;
+        this.useBehavior = new UseByDrink(attributesAffected, increase);
     }
     // getters
     public int getIncrease() {
@@ -21,33 +23,12 @@ public class Potion extends Item implements Usable {
     public String getAttributesAffected() {
         return attributesAffected;
     }
+    public UseBehavior getUseBehavior() {
+        return useBehavior;
+    }
     // implement usable
     public void use(Hero hero) {
-        for(String attribute: attributesAffected.split("/")) {
-            switch (attribute) {
-                case "Health":
-                    hero.getAttribute().setCurrHp(hero.getAttribute().getCurrHp() + increase);
-                    break;
-                case "Mana":
-                    hero.getAttribute().setCurrMp(hero.getAttribute().getCurrMp() + increase);
-                    break;
-                case "Strength":
-                    hero.getAttribute().setCurrStrength(hero.getAttribute().getCurrStrength() + increase);
-                    break;
-                case "Dexerity":
-                    hero.getAttribute().setCurrDexterity(hero.getAttribute().getCurrDexterity() + increase);
-                    break;
-                case "Defense":
-                    hero.getAttribute().setCurrDefense(hero.getAttribute().getCurrDefense() + increase);
-                    break;
-                case "Agility":
-                    hero.getAttribute().setCurrAgility(hero.getAttribute().getCurrAgility() + increase);
-                    break;
-                default:
-                    System.out.println("Attribute " + attribute + " not recognized.");
-                    break;
-            }
-        }
+        useBehavior.use(hero);
         // remove the potion from hero's inventory
         hero.getInventory().remove(this);
     }

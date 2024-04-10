@@ -30,21 +30,21 @@ public class SpellFire extends Spell {
         
         System.out.println(info);
     }
-    // override use
-    public void use(Hero hero) {
-        // deal damage to target
-        int damage = (int)(getDamage() * (1 + hero.getAttribute().getCurrDexterity() * Spell.DEXTERITY_TO_DAMAGE));
-        // print the info
-        Color.print(Color.GREEN, hero.getAttribute().getName());
-        System.out.print(" used a spell ");
-        Color.print(Color.RED, getName());
-        System.out.print(" and dealed " + damage + " damage to ");
-        Color.println(Color.RED, getTarget().getName());
-        // deal the damage
-        getTarget().setHp(getTarget().getHp() - damage);
-        // deal effect to target
-        getTarget().setDefense(getTarget().getDefense() - (int)(getDamage() * Spell.DAMAGE_TO_EFFECT));
-        // remove the spell from inventory
-        hero.getInventory().remove(this);
-    }
+    // // override use
+    // public void use(Hero hero) {
+    //     // deal damage to target
+    //     int damage = (int)(getDamage() * (1 + hero.getAttribute().getCurrDexterity() * Spell.DEXTERITY_TO_DAMAGE));
+    //     // print the info
+    //     Color.print(Color.GREEN, hero.getAttribute().getName());
+    //     System.out.print(" used a spell ");
+    //     Color.print(Color.RED, getName());
+    //     System.out.print(" and dealed " + damage + " damage to ");
+    //     Color.println(Color.RED, getTarget().getName());
+    //     // deal the damage
+    //     getTarget().setHp(getTarget().getHp() - damage);
+    //     // deal effect to target
+    //     getTarget().setDefense(getTarget().getDefense() - (int)(getDamage() * Spell.DAMAGE_TO_EFFECT));
+    //     // remove the spell from inventory
+    //     hero.getInventory().remove(this);
+    // }
 }

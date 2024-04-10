@@ -201,10 +201,10 @@ public class Hero {
                     Color.println(Color.BLACK, "You canceled a spell.");
                     return false;
                 }else{
-                // cast the spell
-                spell.setTarget(monsters.get(Integer.parseInt(targetString) - 1));
-                spell.use(this);
-                return true;
+                    // cast the spell
+                    spell.setTarget(monsters.get(Integer.parseInt(targetString) - 1));
+                    spell.use(this);
+                    return true;
                 }
             }
         }
