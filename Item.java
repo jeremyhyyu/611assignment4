@@ -7,7 +7,7 @@
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Item implements Tradable {
+public abstract class Item implements Tradable {
     // attributes
     private String name;
     private int price;

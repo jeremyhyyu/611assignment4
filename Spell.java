@@ -4,7 +4,7 @@
  * This is the super class for all kinds of spells.
  */
 
-public class Spell extends Item {
+public abstract class Spell extends Item {
     // class variable
     public static final double DEXTERITY_TO_DAMAGE = 0.00001;
     public static final double DAMAGE_TO_EFFECT = 0.1;
