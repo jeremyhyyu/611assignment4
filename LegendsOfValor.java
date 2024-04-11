@@ -15,14 +15,19 @@ public class LegendsOfValor extends RPGGame {
     // methods
     // initialization
     public void initialize() {
-        // assume the factorys are initialized before the game starts
+        HeroFactory.initialize();
+        MonsterFactory.initialize();
+        MarketFactory.initialize();
         // initialize the game board
+
+
         // initialize the heros
         for(int i = 0; i < NUM_OF_HEROS; i++) {
             Hero newHero = HeroFactory.selectAHero(i + 1);
             party.addHero(newHero);
         }
         // generate the fist wave of monsters
+
     }
 
     // generate monsters, call this method every 10 rounds
@@ -38,6 +43,7 @@ public class LegendsOfValor extends RPGGame {
 
     // play a lengends of valor game
     public void play() {
-
+        // ask each hero to make an input
+        
     }
 }

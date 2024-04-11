@@ -9,7 +9,7 @@ public class GameSelector {
     public static void selectAGame() {
         while(true) {
             System.out.println("Which game do you want to play? 1: Monsters and Heros; 2: Legends of Valor; Q: quit");
-            String[] validSet = new String[]{"1", "q", "Q"};
+            String[] validSet = new String[]{"1", "2", "q", "Q"};
             String gameSelection = InputHandler.getAValidChoiceString("Please input your choice: ", validSet);
             if(gameSelection.equals("1")) {
                 // customize game settings
