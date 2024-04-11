@@ -17,13 +17,13 @@ public class MonstersAndHeroes extends RPGGame {
     public static final int MIN_HERO = 1;
     public static final int MAX_HERO = 3;
     private Party party;
-    private Map map;
+    private HerosAndLegendsMap map;
     private List<Market> markets;
     private boolean partyInMarket;
     private GridMarket marketGridArch;
     // constructor
     public MonstersAndHeroes(int sideLength) {
-        this.map = new Map(sideLength);
+        this.map = new HerosAndLegendsMap(sideLength);
         party = new Party();
         markets = new ArrayList<>();
     }
@@ -31,7 +31,7 @@ public class MonstersAndHeroes extends RPGGame {
     public Party getParty() {
         return party;
     }
-    public Map getMap() {
+    public HerosAndLegendsMap getMap() {
         return map;
     }
     public List<Market> getMarkets() {
