@@ -17,9 +17,6 @@ public class HerosAndLegendsMap extends Map {
     public int getSideLength() {
         return sideLength;
     }
-    public Grid[][] getGrids() {
-        return grids;
-    }
     // initialize map
     public void initializeMap() {
         for(int i = 0; i < sideLength; i++) {
@@ -27,14 +24,6 @@ public class HerosAndLegendsMap extends Map {
                 grids[i][j] = new GridNormal(i, j);
             }
         }
-    }
-    // set grid
-    public void setGrid(int row, int col, Grid grid) {
-        grids[row][col] = grid;
-    }
-    // get grid
-    public Grid getGrid(int row, int col) {
-        return grids[row][col];
     }
     // display map
     public void displayMap() {
