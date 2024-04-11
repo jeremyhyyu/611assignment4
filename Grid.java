@@ -13,6 +13,10 @@ public class Grid {
         this.row = row;
         this.col = col;
     }
+    public Grid(){
+        this.row = 0;
+        this.col = 0;
+    }
     // getters
     public int getRow() {
         return row;

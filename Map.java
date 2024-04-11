@@ -3,7 +3,7 @@
  * heros and monsters game and Valor game
  */
 public class Map {
-    protected Grid[][] grids;
-    protected int numOfRows;
-    protected int numOfCols;
+    protected Grid[][] grids; // grids
+    protected int numOfRows; // number of rows
+    protected int numOfCols; // number of columns
 }
