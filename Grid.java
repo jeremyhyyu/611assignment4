@@ -24,4 +24,8 @@ public class Grid {
     public int getCol() {
         return col;
     }
+    // used in printing the tile
+    public String toString(){
+        return "  ";
+    }
 }
