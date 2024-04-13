@@ -11,13 +11,13 @@ public class LegendsOfValorMap extends Map {
     private static final String RIGHT = "RIGHT";
     private static final String LEFT = "LEFT";
 
-    private List<HeroLegends> heros; // the list of heros on the map
+    private List<Hero> heros; // the list of heros on the map
     private List<Monster> monsters; // the list of monsters on the map
     private List<List<Integer>> heroPositions; // positions of the heros on the map. pos[i] represents ith lane hero coordinates
     private List<List<Integer>> monsterPositions; // positions of the monsters on the map. It is list of monsters per lane. pos[i][j] is ith lane jth monster row number
 
     // constructor
-    public LegendsOfValorMap(int rows, List<HeroLegends> hs){
+    public LegendsOfValorMap(int rows, List<Hero> hs){
         // initializing
         numOfRows = rows;
         numOfCols = 3*hs.size()-1;
@@ -236,8 +236,8 @@ public class LegendsOfValorMap extends Map {
     }
 
     // get list of heros which are in range of current monster
-    public List<HeroLegends> getHerosInRange(int lane, int monsterInLane){
-        List<HeroLegends> result = new ArrayList<>();
+    public List<Hero> getHerosInRange(int lane, int monsterInLane){
+        List<Hero> result = new ArrayList<>();
         for (int i = 0; i < heros.size(); i++) {
             int heroRow = getHeroPosition(i).get(0);
             int heroCol = getHeroPosition(i).get(1);
