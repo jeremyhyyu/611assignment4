@@ -17,6 +17,8 @@ public class HeroLegends extends Hero implements TerrainObserver {
 
     // implement the observer pattern, the input is the grid which the hero is standing on
     public void update(Grid grid) {
+        // reset the attribute of hero
+        getAttribute().resetBattleRelatedAttributes();
         // update different attributes according to the type of the grid
         if(grid instanceof BushLegendsGrid) {
             getAttribute().setCurrDexterity(getAttribute().getCurrDexterity() + (int)(BENEFIT_BY_TERRAIN * getAttribute().getDexterity()));
