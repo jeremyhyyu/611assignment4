@@ -10,6 +10,7 @@ public class LegendsOfValorMap extends Map {
     private static final String DOWN = "DOWN";
     private static final String RIGHT = "RIGHT";
     private static final String LEFT = "LEFT";
+    public static final int MONSTER_NEXUS_ROW = 0;
 
     private List<Hero> heros; // the list of heros on the map
     private List<Monster> monsters; // the list of monsters on the map
@@ -335,5 +336,29 @@ public class LegendsOfValorMap extends Map {
     // returns true if hero is in market and can buy stuff
     public boolean isHeroInMarket(int heroId){
         return getHeroPosition(heroId).get(0) == numOfRows-1;
+    }
+
+    // delete monster from the list if the hp of montser is lower or equal to 0, return the level of the monster deleted
+    public int monsterRecyler() {
+        int level = 0;
+        for(Monster monster: monsters) {
+            if(monster.getHp() <= 0) {
+                System.out.print("Monster ");
+                Color.print(Color.RED, monster.getName());
+                System.out.println(" is defeated!");
+                level = monster.getLevel();
+                monsters.remove(monster);
+                break;
+            }
+        }
+        return level;
+    }
+
+    // check winning condition
+    public boolean checkWinningCondition() {
+        for(List<Integer> heroPos: heroPositions) {
+            if(heroPos.get(0) == MONSTER_NEXUS_ROW) return true;
+        }
+        return false;
     }
 }

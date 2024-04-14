@@ -127,6 +127,55 @@ public class HeroFactory {
         String type = selectType(index);
         return selectAHeroByType(type, index);
     }
+
+
+    // create a hero of legends of valor
+    public static HeroLegends selectAHeroLegendsByType(String type, int index) {
+        System.out.println("Please select your hero " + index + ".");
+        System.out.println(String.format("%-5s %-20s %-10s %-10s %-10s %-10s %-10s %-10s", 
+                                 "No.", "Name", "Mana", "Strength", "Agility", "Dexterity", "Starting Money", "Starting Exp"));
+        List<String> heroSet = new ArrayList<>();
+        if(type.equals("Warrior")) {
+            heroSet = warriorData;
+        }else if(type.equals("Sorcerer")) {
+            heroSet = sorcererData;
+        }else{
+            heroSet = paladinData;
+        }
+        int i = 1;
+        for(String hero: heroSet) {
+            String[] parts = hero.split("\\s+");
+            System.out.println(String.format("%-5d %-20s %-10s %-10s %-10s %-10s %-14s %-10s", 
+                                            i,
+                                            parts[0].replace('_', ' '),
+                                            parts[1], 
+                                            parts[2], 
+                                            parts[3], 
+                                            parts[4], 
+                                            parts[5], 
+                                            parts[6]));
+            i++;
+
+        }
+        int selection = InputHandler.getAnIntegerInARange("hero you select", 1, heroSet.size());
+        String hero = heroSet.get(selection - 1);
+        String[] heroStats = hero.split("\\s+");
+        HeroAttribute attribute = new HeroAttribute(heroStats[0], type, 1, 
+            Integer.parseInt(heroStats[6]),
+            Integer.parseInt(heroStats[1]),
+            Integer.parseInt(heroStats[2]),
+            Integer.parseInt(heroStats[4]),
+            0,
+            Integer.parseInt(heroStats[3]),
+            Integer.parseInt(heroStats[5]));
+        return new HeroLegends(attribute, new ArrayList<>());
+    }
+
+    // return a hero legends
+    public static HeroLegends selectAHeroLegends(int index) {
+        String type = selectType(index);
+        return selectAHeroLegendsByType(type, index);
+    }
     public static void main(String[] args) {
         initialize();
         Hero h = selectAHero(1);

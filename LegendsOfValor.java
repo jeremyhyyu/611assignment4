@@ -6,6 +6,8 @@ public class LegendsOfValor extends RPGGame {
     public static final int INTERVAL_TO_GENERATE_MONSTERS = 10; // new monsters are generated every 10 rounds
     public static final int NUM_OF_HEROS = 3;
     public static final int NUM_OF_ROWS = 8;
+    public static final int MONEY_REWARD_RATIO = 500;
+    public static final int EXP_REWARD_RATIO = 2;
     // attributes
     private PartyLegends party;
     private LegendsOfValorMap map;
@@ -29,7 +31,7 @@ public class LegendsOfValor extends RPGGame {
 
         // initialize the heros
         for(int i = 0; i < NUM_OF_HEROS; i++) {
-            Hero newHero = HeroFactory.selectAHero(i + 1);
+            Hero newHero = HeroFactory.selectAHeroLegends(i + 1);
             party.addHero(newHero);
         }
 
@@ -55,61 +57,90 @@ public class LegendsOfValor extends RPGGame {
 
     // play a lengends of valor game
     public void play() {
+        // ask each hero to make an input
+        for(Hero hero: party.getHeros()) {
+            // terminate the game if hero choose quit
+            if(askHeroForAnInput(hero)) return;
+            
+            // check if any monsters is defeated
+            int levelOfMonster = map.monsterRecyler();
+            if(levelOfMonster > 0) {
+                // this means that the previous action killed a monster, give all heroes rewards
+                getRewards(levelOfMonster);
+            }
+
+            // check winning condition
+            if(map.checkWinningCondition()) {
+                Color.println(Color.GREEN, "Congratulations! Hero team wins!");
+                // terminate the game
+                return;
+            }
+        }
+
+        // monster actions
+    }
+
+    // ask a hero to make an input, return true if user select quit
+    public boolean askHeroForAnInput(Hero hero) {
         // valid sets to for user input
         String[] directionSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D"};
         String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q"};
-        // ask each hero to make an input
-        for(Hero hero: party.getHeros()) {
-            int heroId = party.getHeros().indexOf(hero);
-            while(true) {
-                map.displayMap();
-                System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
-                String userInput = InputHandler.getAValidChoiceString("Your choice is: ", validSet);
+        int heroId = party.getHeros().indexOf(hero);
+        while(true) {
+            map.displayMap();
+            System.out.print("Hero ");
+            Color.print(Color.GREEN, hero.getAttribute().getName());
+            System.out.println("'s turn!");
+            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
+            String userInput = InputHandler.getAValidChoiceString("Your choice is: ", validSet);
 
-                // move, if successfully moved, switch the turn to next hero or monster
-                if(Arrays.asList(directionSet).contains(userInput)) {
-                    // first convert the input into direction string
-                    String dir = "";
-                    if(userInput.equalsIgnoreCase("w")) dir = "UP";
-                    if(userInput.equalsIgnoreCase("s")) dir = "DOWN";
-                    if(userInput.equalsIgnoreCase("a")) dir = "LEFT";
-                    if(userInput.equalsIgnoreCase("d")) dir = "RIGHT";
-                    // check if hero is movable in this direction
-                    if(map.isHeroMovable(heroId, dir)) {
-                        map.moveHero(heroId, dir);
-                        break;
-                    }
+            // move, if successfully moved, return false
+            if(Arrays.asList(directionSet).contains(userInput)) {
+                // first convert the input into direction string
+                String dir = "";
+                if(userInput.equalsIgnoreCase("w")) dir = "UP";
+                if(userInput.equalsIgnoreCase("s")) dir = "DOWN";
+                if(userInput.equalsIgnoreCase("a")) dir = "LEFT";
+                if(userInput.equalsIgnoreCase("d")) dir = "RIGHT";
+                // check if hero is movable in this direction
+                if(map.isHeroMovable(heroId, dir)) {
+                    map.moveHero(heroId, dir);
+                    return false;
                 }
-                
-                // change weapon or armor, if successfully changed, switch the turn to next character
-                if(userInput.equalsIgnoreCase("c")) {
-                    if(hero.equipmentMenu()) break;
+            }
+
+            // change weapon or armor, if successfully changed, return false
+            if(userInput.equalsIgnoreCase("c")) {
+                if(hero.equipmentMenu()) return false;
+            }
+
+            // consume a potion, if successfully consumed, switch turn to next character
+            if(userInput.equalsIgnoreCase("p")) {
+                if(hero.potionMenu()) return false;
+            }
+
+            // first check if there are any monster in the attack range, then if successfully attacked, return false
+            if(userInput.equalsIgnoreCase("j")) {
+                List<Monster> monstersInRange = map.getMonstersInRange(party.getHeros().indexOf(hero));
+                if(monstersInRange.size() != 0) {
+                    Monster target = selectATargetMonster(monstersInRange);
+                    heroAttackMonster(hero, target);
+                    return false;
+                }else{
+                    Color.println(Color.RED, "There's no monsters in your attack range!");
                 }
+            }
 
-                // consume a potion, if successfully consumed, switch turn to next character
-                if(userInput.equalsIgnoreCase("p")) {
-                    if(hero.potionMenu()) break;
-                }
+            // cast a spell
 
-                // first check if there are any monster in the attack range, then if successfully attacked, switch turn to next character
-                if(userInput.equalsIgnoreCase("j")) {
-                    List<Monster> monstersInRange = map.getMonstersInRange(party.getHeros().indexOf(hero));
-                    if(monstersInRange.size() != 0) {
-                        Monster target = selectATargetMonster(monstersInRange);
-                        heroAttackMonster(hero, target);
-                        break;
-                    }else{
-                        Color.println(Color.RED, "There's no monsters in your attack range!");
-                    }
-                }
+            // teleport
 
-                // cast a spell
+            // recall
 
-                // teleport
-
-                // recall
-
-                // quit
+            // quit
+            if(userInput.equalsIgnoreCase("q")) {
+                System.out.println("You quited the game!");
+                return true;
             }
         }
     }
@@ -150,5 +181,17 @@ public class LegendsOfValor extends RPGGame {
         System.out.print(" deals " + damage + " damage to ");
         Color.println(Color.RED, monster.getName());
         monster.setHp(monster.getHp() - damage);
+    }
+
+    // get the money and experience rewards for all heroes
+    public void getRewards(int monsterLevel) {
+        int moneyReward = monsterLevel * MONEY_REWARD_RATIO;
+        int expReward = monsterLevel * EXP_REWARD_RATIO;
+
+        // all heroes get the same reward
+        for(Hero hero: party.getHeros()) {
+            hero.getAttribute().setExperience(hero.getAttribute().getExperience() + expReward);
+            hero.getAttribute().setGold(hero.getAttribute().getGold() + moneyReward);
+        }
     }
 }
