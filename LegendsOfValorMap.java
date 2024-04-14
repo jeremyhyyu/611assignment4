@@ -126,8 +126,7 @@ public class LegendsOfValorMap extends Map {
         int col = getHeroPosition(heroId).get(1);
         if (addOrRemove) {
             grids[row][col].addHero();
-            System.out.println(grids[row][col].getClass());
-            // ((TerrainObserver) heros.get(heroId)).update(grids[row][col]);
+            ((TerrainObserver) heros.get(heroId)).update(grids[row][col]);
         }
         else{
             grids[row][col].removeHero();
@@ -336,42 +335,5 @@ public class LegendsOfValorMap extends Map {
     // returns true if hero is in market and can buy stuff
     public boolean isHeroInMarket(int heroId){
         return getHeroPosition(heroId).get(0) == numOfRows-1;
-    }
-
-    public static void main(String[] args) {
-        HeroFactory.initialize();
-        MonsterFactory.initialize();
-        List<Hero> heros = Arrays.asList(HeroFactory.selectAHeroByType("Warrior",0),
-            HeroFactory.selectAHeroByType("Warrior",1),
-            HeroFactory.selectAHeroByType("Warrior",2));
-        LegendsOfValorMap map = new LegendsOfValorMap(8, heros);
-        map.displayMap();
-        map.addMonster(1, MonsterFactory.generateMonsterByHeroLevel(1));
-        map.addMonster(1, MonsterFactory.generateMonsterByHeroLevel(1));
-        map.moveMonster(1, 0);
-        map.moveMonster(1, 0);
-        map.moveMonster(1, 1);
-        System.out.println(map.isMonsterMovable(1, 0));
-        System.out.println(map.isMonsterMovable(1, 1));
-        System.out.println(map.isHeroInMarket(1));
-        System.out.println(map.isHeroMovable(0, DOWN));
-        System.out.println(map.isHeroMovable(1, LEFT));
-        System.out.println(map.isHeroMovable(2, RIGHT));
-        map.moveHero(0, UP);
-        map.moveHero(0, UP);
-        map.moveHero(0, UP);
-        map.teleport(1, 0);
-        map.teleport(2, 0);
-        map.displayMap();
-        map.resetHero(1);
-        map.displayMap();
-        map.addMonster(0, MonsterFactory.generateMonsterByHeroLevel(1));
-        map.moveMonster(0, 0);
-        map.moveMonster(0, 0);
-        map.moveMonster(0, 0);
-        map.moveMonster(0, 0);
-        System.out.println(map.isMonsterMovable(0,0));
-        System.out.println(map.isHeroMovable(0,RIGHT));
-        map.displayMap();
     }
 }
