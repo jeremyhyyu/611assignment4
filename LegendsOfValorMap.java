@@ -31,6 +31,7 @@ public class LegendsOfValorMap extends Map {
         heros.addAll(hs);
         for (int i = 0; i < heros.size(); i++) {
             heroPositions.add(Arrays.asList(numOfRows-1,i*3));
+            updateHeroGrid(i, true);
             monsterPositions.add(new ArrayList<>());
         }
         createRandomMap();
@@ -70,6 +71,7 @@ public class LegendsOfValorMap extends Map {
 
     // moving a hero. first validity should be checked only then this should be called
     public void moveHero(int heroInd, String direction){
+        updateHeroGrid(heroInd, false);
         switch (direction) {
             case LEFT:
                 heroPositions.get(heroInd).set(1, heroPositions.get(heroInd).get(1)-1);
@@ -86,6 +88,7 @@ public class LegendsOfValorMap extends Map {
             default:
                 break;
         }
+        updateHeroGrid(heroInd, true);
     }
 
     /**
@@ -95,11 +98,46 @@ public class LegendsOfValorMap extends Map {
     public void addMonster(int lane, Monster monster){
         monsters.add(monster);
         monsterPositions.get(lane).add(0);
+        updateMonsterGrid(lane, numOfMonstersInLane(lane)-1, true);
+    }
+
+    /**
+     * Adds or removed the monster from certain tile.
+     * addOrRemove is true for adding, false for removing
+     */
+    private void updateMonsterGrid(int lane, int monsterInLane, boolean addOrRemove){
+        int row = getMonsterPosition(lane, monsterInLane).get(0);
+        int col = getMonsterPosition(lane, monsterInLane).get(1);
+        if (addOrRemove) {
+            grids[row][col].addMonster();
+        }
+        else{
+            grids[row][col].removeMonster();
+        }
+    }
+
+    /**
+     * Adds or removed the hero from certain tile.
+     * addOrRemove is true for adding, false for removing.
+     * Uses the observer pattern to let the hero know to update their abilities.
+     */
+    private void updateHeroGrid(int heroId, boolean addOrRemove){
+        int row = getHeroPosition(heroId).get(0);
+        int col = getHeroPosition(heroId).get(1);
+        if (addOrRemove) {
+            grids[row][col].addHero();
+            ((TerrainObserver) heros.get(heroId)).update(grids[row][col]);
+        }
+        else{
+            grids[row][col].removeHero();
+        }
     }
 
     // moving a monster. first validity should be checked only then this should be called
     public void moveMonster(int lane, int monsterInLane){
+        updateMonsterGrid(lane, monsterInLane, false);
         monsterPositions.get(lane).set(monsterInLane, monsterPositions.get(lane).get(monsterInLane)+1);
+        updateMonsterGrid(lane, monsterInLane, true);
     }
 
     // get number of monsters in lane
@@ -149,13 +187,16 @@ public class LegendsOfValorMap extends Map {
      * he goes back from teleportation or when he needs to go to market to buy something
      */
     public void resetHero(int heroId){
+        updateHeroGrid(heroId, false);
         heroPositions.set(heroId, Arrays.asList(numOfRows-1, heroId*3));
+        updateHeroGrid(heroId, true);
     }
 
     /**
      * removes monster in a lane given the monster number
      */
     public void removeMonster(int lane, int monsterInLane){
+        updateMonsterGrid(lane, monsterInLane, false);
         monsterPositions.get(lane).remove(monsterInLane);
     }
 
@@ -266,22 +307,28 @@ public class LegendsOfValorMap extends Map {
             if (getHeroLane(i)==lane) otherHeroRow = getHeroPosition(i).get(0);
         }
 
+        // remove hero from current tile
+        updateHeroGrid(heroId, false);
+
         // no one in new lane
         if (numHerosInTheLane==0) {
             heroPositions.set(heroId, Arrays.asList(getHeroPosition(heroId).get(0),3*lane));
-            return;
         }
 
         // one hero already in lane
         if (numHerosInTheLane==1) {
             heroPositions.set(heroId, Arrays.asList(otherHeroRow, 3*lane+1));
-            return;
         }
 
         // both heros already in lane
-        if (numHerosInTheLane == 2 && otherHeroRow-1>=0) {
+        if (numHerosInTheLane == 2) {
+            if (otherHeroRow-1<0) {
+                return;
+            }
             heroPositions.set(heroId, Arrays.asList(otherHeroRow-1, 3*lane));
-            return;
         }
+
+        // add hero to new tile
+        updateHeroGrid(heroId, true);
     }
 }
