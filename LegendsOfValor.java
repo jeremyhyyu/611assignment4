@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,13 +31,15 @@ public class LegendsOfValor extends RPGGame {
         MarketFactory.initialize();
 
         // initialize the heros
+        List<HeroLegends> heroList = new ArrayList<>();
         for(int i = 0; i < NUM_OF_HEROS; i++) {
             Hero newHero = HeroFactory.selectAHeroLegends(i + 1);
             party.addHero(newHero);
+            heroList.add((HeroLegends)newHero);
         }
 
         // initialize the game board
-        map = new LegendsOfValorMap(NUM_OF_ROWS, party.getHeros());
+        map = new LegendsOfValorMap(NUM_OF_ROWS, heroList);
 
         // generate the fist wave of monsters
         generateMonsters();
@@ -57,41 +60,61 @@ public class LegendsOfValor extends RPGGame {
 
     // play a lengends of valor game
     public void play() {
-        // ask each hero to make an input
-        for(Hero hero: party.getHeros()) {
-            // terminate the game if hero choose quit
-            if(askHeroForAnInput(hero)) return;
+        int roundCnt = 0;
+        while(true) {
+            // ask each hero to make an input
+            for(Hero hero: party.getHeros()) {
+                // terminate the game if hero choose quit
+                if(askHeroForAnInput(hero)) return;
+                
+                // check if any monsters is defeated
+                int levelOfMonster = map.monsterRecyler();
+                if(levelOfMonster > 0) {
+                    // this means that the previous action killed a monster, give all heroes rewards
+                    getRewards(levelOfMonster);
+                }
+
+                // check winning condition
+                if(map.checkWinningCondition()) {
+                    Color.println(Color.GREEN, "Congratulations! Hero team wins!");
+                    // terminate the game
+                    return;
+                }
+            }
+
+            // monster actions
+            for(int i = 0; i < NUM_OF_HEROS; i++) {
+                monsterManagement(i);
+
+                // check hero status, move the hero back to the nexus if hero is defeated
+                map.heroRecyler();
+
+                // check winning condition for monster team
+                if(map.checkLosingCondition()) {
+                    Color.println(Color.RED, "Hero team losed the game!");
+                    // terminate the game
+                    return;
+                }
+            }
             
-            // check if any monsters is defeated
-            int levelOfMonster = map.monsterRecyler();
-            if(levelOfMonster > 0) {
-                // this means that the previous action killed a monster, give all heroes rewards
-                getRewards(levelOfMonster);
-            }
-
-            // check winning condition
-            if(map.checkWinningCondition()) {
-                Color.println(Color.GREEN, "Congratulations! Hero team wins!");
-                // terminate the game
-                return;
-            }
+            // generate new monsters every few rounds
+            roundCnt++;
+            if(roundCnt % INTERVAL_TO_GENERATE_MONSTERS == 0) generateMonsters();
         }
-
-        // monster actions
     }
 
     // ask a hero to make an input, return true if user select quit
     public boolean askHeroForAnInput(Hero hero) {
         // valid sets to for user input
         String[] directionSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D"};
-        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q"};
+        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q", "m", "M"};
         int heroId = party.getHeros().indexOf(hero);
         while(true) {
             map.displayMap();
             System.out.print("Hero ");
             Color.print(Color.GREEN, hero.getAttribute().getName());
             System.out.println("'s turn!");
-            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
+            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
             String userInput = InputHandler.getAValidChoiceString("Your choice is: ", validSet);
 
             // move, if successfully moved, return false
@@ -119,23 +142,54 @@ public class LegendsOfValor extends RPGGame {
                 if(hero.potionMenu()) return false;
             }
 
+            // if hero is in the nexus, then hero can enter the store
+            if(userInput.equalsIgnoreCase("m")) {
+                // first check if user is on the nexus grid
+                if(!map.isHeroInMarket(heroId)) {
+                    Color.println(Color.RED, "You can only enter the market when you are in nexus!");
+                }else{
+                    // enter the market
+                    map.enterMarket(heroId);
+                }
+            }
+
             // first check if there are any monster in the attack range, then if successfully attacked, return false
             if(userInput.equalsIgnoreCase("j")) {
                 List<Monster> monstersInRange = map.getMonstersInRange(party.getHeros().indexOf(hero));
-                if(monstersInRange.size() != 0) {
-                    Monster target = selectATargetMonster(monstersInRange);
-                    heroAttackMonster(hero, target);
-                    return false;
+                if(!monstersInRange.isEmpty()) {
+                    // check if hero equiped a weapon, hero cannot attack if not equiped a weapon
+                    if(hero.getWeapon() == null) {
+                        Color.println(Color.RED, "You cannot attack a monster without a weapon!");
+                    }else{
+                        // attack
+                        Monster target = selectATargetMonster(monstersInRange);
+                        heroAttackMonster(hero, target);
+                        return false;
+                    }
                 }else{
                     Color.println(Color.RED, "There's no monsters in your attack range!");
                 }
             }
 
             // cast a spell
+            if(userInput.equalsIgnoreCase("k")) {
+                List<Monster> monstersInRange = map.getMonstersInRange(party.getHeros().indexOf(hero));
+                // if no montsers in range
+                if(monstersInRange.isEmpty()) {
+                    Color.println(Color.RED, "Thers's no monsters in your range!");
+                }else{
+                    // if successfully casted a spell return false
+                    if(hero.spellMenu(monstersInRange)) return false;
+                }
+            }
 
             // teleport
 
             // recall
+            if(userInput.equalsIgnoreCase("r")) {
+                map.resetHero(heroId);
+                return false;
+            }
 
             // quit
             if(userInput.equalsIgnoreCase("q")) {
@@ -192,6 +246,29 @@ public class LegendsOfValor extends RPGGame {
         for(Hero hero: party.getHeros()) {
             hero.getAttribute().setExperience(hero.getAttribute().getExperience() + expReward);
             hero.getAttribute().setGold(hero.getAttribute().getGold() + moneyReward);
+        }
+    }
+
+    // manage the action of all monsters in a lane
+    public void monsterManagement(int laneId) {
+        // first get all monsters in this lane
+        List<Monster> monsters = map.getMonstersInLane(laneId);
+        // then decide the action for each monster in this lane
+        for(int i = 0; i < monsters.size(); i++) {
+            Monster monster = monsters.get(i);
+            // first goal is to reach the hero's nexus, so move forward has the highest priorty
+            if(map.isMonsterMovable(laneId, i)) {
+                map.moveMonster(laneId, i);
+            }else{
+                // which means block by a hero or monster
+                // check if there are any hero in range
+                List<Hero> herosInRange = map.getHerosInRange(laneId, i);
+                // if the list is not empty, attack random hero
+                if(!herosInRange.isEmpty()) {
+                    int target = RandomGenerator.randInt(1, herosInRange.size());
+                    monster.attack(herosInRange.get(target - 1));
+                }
+            }
         }
     }
 }

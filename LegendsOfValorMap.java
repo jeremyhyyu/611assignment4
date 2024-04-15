@@ -12,19 +12,21 @@ public class LegendsOfValorMap extends Map {
     private static final String LEFT = "LEFT";
     public static final int MONSTER_NEXUS_ROW = 0;
 
-    private List<Hero> heros; // the list of heros on the map
+    private List<HeroLegends> heros; // the list of heros on the map
     private List<Monster> monsters; // the list of monsters on the map
+    private List<Market> markets; // the list of monsters on the map, one for each lane
     private List<List<Integer>> heroPositions; // positions of the heros on the map. pos[i] represents ith lane hero coordinates
     private List<List<Integer>> monsterPositions; // positions of the monsters on the map. It is list of monsters per lane. pos[i][j] is ith lane jth monster row number
 
     // constructor
-    public LegendsOfValorMap(int rows, List<Hero> hs){
+    public LegendsOfValorMap(int rows, List<HeroLegends> hs){
         // initializing
         numOfRows = rows;
         numOfCols = 3*hs.size()-1;
         grids = new Grid[numOfRows][numOfCols];
         heros = new ArrayList<>();
         monsters = new ArrayList<>();
+        markets = new ArrayList<>();
         heroPositions = new ArrayList<>();
         monsterPositions = new ArrayList<>();
 
@@ -36,7 +38,19 @@ public class LegendsOfValorMap extends Map {
             updateHeroGrid(i, true);
             monsterPositions.add(new ArrayList<>());
         }
+        // add the markets
+        for(int i = 0; i < hs.size(); i++) {
+            markets.add(MarketFactory.generateMarket(rows - 1, i * 3));
+        }
     }
+
+    // hero enter a market
+    public void enterMarket(int heroId) {
+        Hero hero = heros.get(heroId);
+        Market market = markets.get(heroPositions.get(heroId).get(1) / 3);
+        market.tradingMenu(hero);
+    }
+
     // create random map with all the possible tiles
     private void createRandomMap(){
         for (int i = 0; i < numOfRows; i++) {
@@ -358,6 +372,32 @@ public class LegendsOfValorMap extends Map {
     public boolean checkWinningCondition() {
         for(List<Integer> heroPos: heroPositions) {
             if(heroPos.get(0) == MONSTER_NEXUS_ROW) return true;
+        }
+        return false;
+    }
+
+    // hero recyler, move the hero back to nexus and recover the status
+    public void heroRecyler() {
+        for(int i = 0; i < heros.size(); i++) {
+            Hero hero = heros.get(i);
+            if(hero.getAttribute().getCurrHp() <= 0) {
+                resetHero(i);
+                // recover the attributes
+                hero.getAttribute().setCurrHp(hero.getAttribute().getHp());
+                hero.getAttribute().setCurrMp(hero.getAttribute().getMp());
+                hero.getAttribute().resetBattleRelatedAttributes();
+            } 
+        }
+    }
+
+    // checking losing condition
+    public boolean checkLosingCondition() {
+        for(List<Integer> monsterRowPosInALane: monsterPositions) {
+            for(int pos: monsterRowPosInALane) {
+                if(pos == numOfRows - 1) {
+                    return true;
+                }
+            }
         }
         return false;
     }
