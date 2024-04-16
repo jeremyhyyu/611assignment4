@@ -107,14 +107,14 @@ public class LegendsOfValor extends RPGGame {
     public boolean askHeroForAnInput(Hero hero) {
         // valid sets to for user input
         String[] directionSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D"};
-        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q", "m", "M"};
+        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q", "m", "M", "h", "H"};
         int heroId = party.getHeros().indexOf(hero);
         while(true) {
             map.displayMap();
             System.out.print("Hero ");
             Color.print(Color.GREEN, hero.getAttribute().getName());
             System.out.println("'s turn!");
-            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
+            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
             String userInput = InputHandler.getAValidChoiceString("Your choice is: ", validSet);
 
             // move, if successfully moved, return false
@@ -151,6 +151,11 @@ public class LegendsOfValor extends RPGGame {
                     // enter the market
                     map.enterMarket(heroId);
                 }
+            }
+
+            // check the stats of hero
+            if(userInput.equalsIgnoreCase("h")) {
+                hero.getAttribute().display(heroId + 1);
             }
 
             // first check if there are any monster in the attack range, then if successfully attacked, return false
