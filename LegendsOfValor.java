@@ -108,14 +108,14 @@ public class LegendsOfValor extends RPGGame {
     public boolean askHeroForAnInput(Hero hero) {
         // valid sets to for user input
         String[] directionSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D"};
-        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q", "m", "M", "h", "H"};
+        String[] validSet = new String[]{"w", "W", "a", "A", "s", "S", "d", "D", "c", "C", "p", "P", "j", "J", "k", "K", "t", "T", "r", "R", "q", "Q", "m", "M", "h", "H", "g", "G"};
         int heroId = party.getHeros().indexOf(hero);
         while(true) {
             map.displayMap();
             System.out.print("Hero ");
             Color.print(Color.GREEN, hero.getAttribute().getName());
             System.out.println("'s turn!");
-            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
+            System.out.println("<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit");
             String userInput = InputHandler.getAValidChoiceString("Your choice is: ", validSet);
 
             // move, if successfully moved, return false
@@ -152,6 +152,26 @@ public class LegendsOfValor extends RPGGame {
                     // enter the market
                     map.enterMarket(heroId);
                 }
+            }
+
+            // show the game info, rules of the game, color of grids...
+            if(userInput.equalsIgnoreCase("g")) {
+                System.out.println("In this game, your goal is reaching the monsters' nexus and prevent your nexus from being accessed by monsters.");
+                System.out.println("Different colors represent different terrian: ");
+                Color.print(Color.RED, "\tred - ");
+                System.out.println("Monster nexus, where monsters are generated");
+                Color.print(Color.PURPLE, "\tpurple - ");
+                System.out.println("Hero nexus, where hero can access the market and reborn");
+                Color.print(Color.YELLOW, "\tyellow - ");
+                System.out.println("Cave, hero have a buff of 10% agility on these grids");
+                Color.print(Color.GREEN, "\tgreen - ");
+                System.out.println("Koulou, hero have a buff of 10% strength on these grids");
+                Color.print(Color.BLUE, "\tblue - ");
+                System.out.println("Bush, hero have a buff of 10% dexterity on these grids");
+                Color.print(Color.CYAN, "\tcyan - ");
+                System.out.println("normal grid");
+                Color.print(Color.BLACK, "\tblack - ");
+                System.out.println("inaccessible grid");
             }
 
             // check the stats of hero
