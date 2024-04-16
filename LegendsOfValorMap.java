@@ -309,42 +309,94 @@ public class LegendsOfValorMap extends Map {
         return result;
     }
 
-    // can hero be teleported to a lane
-    public boolean canTeleport(int heroId, int lane){
-        // second condition is to make sure hero is currently in his lane
-        return getHeroLane(heroId)!=lane && getHeroPosition(heroId).get(1)%3==heroId;
+    // get the heroids in a current lane
+    private List<Integer> getHerosInLane(int lane){
+        List<Integer> heroIds = new ArrayList<>();
+        for (int i = 0; i < heros.size(); i++) {
+            if(getHeroLane(i)==lane) heroIds.add(i);
+        }
+        return heroIds;
+    }
+
+    /**
+     * get the hero id of the hero who is in front in the given lane
+     */
+    private int getHeroOnFrontInLane(int lane){
+        int heroId = 0;
+        int lowestRow = numOfRows;
+        List<Integer> herosInLane = getHerosInLane(lane);
+        for (Integer i: herosInLane) {
+            if(getHeroPosition(i).get(0)<lowestRow){
+                heroId = i;
+                lowestRow = getHeroPosition(i).get(0);
+            }
+        }
+        return heroId;
+    }
+
+    /**
+     * returns if there is a hero already in a given coordinate
+     */
+    private boolean heroAlreadyInGivenCoords(int rowId, int colId){
+        for (int i = 0; i < heros.size(); i++) {
+            if (rowId == getHeroPosition(i).get(0) && colId == getHeroPosition(i).get(1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // can hero be teleported to a lane. side to teleport is 0 or 1, 0->beside hero, 1->below hero
+    public boolean canTeleport(int heroId, int lane, int sideToTeleport){
+        // checks if the teleportation is valid from lanes
+        // second condition is to make sure hero cannot teleport to his own lane
+        if (!(getHeroLane(heroId)!=lane && heroId!=lane && getHerosInLane(lane).size()>=1)) return false;
+
+        // get the coordinates of hero in the front, then teleport to his side or below
+        int heroInFront = getHeroOnFrontInLane(lane);
+        int rowOfFrontHero = getHeroPosition(heroInFront).get(0);
+        int colOfFrontHero = getHeroPosition(heroInFront).get(1);
+
+        if(sideToTeleport == 1 && rowOfFrontHero == numOfRows-1) return false; // if he is at nexus
+
+        // setting where to teleport
+        int rowToTeleport = rowOfFrontHero;
+        int colToTeleport = colOfFrontHero;
+        if (sideToTeleport == 1) {
+            rowToTeleport += 1;
+        }else{
+            if (colOfFrontHero%3 == 0) {
+                colToTeleport += 1;
+            }else{
+                colToTeleport -= 1;
+            }
+        }
+        return !heroAlreadyInGivenCoords(rowToTeleport, colToTeleport);
     }
 
     // teleport a hero to another lane. This should only be called after checking the canTeleport
-    public void teleport(int heroId, int lane){
-        int numHerosInTheLane = 0;
-        int otherHeroRow = 0;
-        for (int i = 0; i < heros.size(); i++) {
-            if(i==heroId) continue;
-            numHerosInTheLane += getHeroLane(i)==lane?1:0;
-            if (getHeroLane(i)==lane) otherHeroRow = getHeroPosition(i).get(0);
-        }
-
+    public void teleport(int heroId, int lane, int sideToTeleport){
         // remove hero from current tile
         updateHeroGrid(heroId, false);
 
-        // no one in new lane
-        if (numHerosInTheLane==0) {
-            heroPositions.set(heroId, Arrays.asList(getHeroPosition(heroId).get(0),3*lane));
-        }
+        // get the coordinates of hero in the front, then teleport to his side or below
+        int heroInFront = getHeroOnFrontInLane(lane);
+        int rowOfFrontHero = getHeroPosition(heroInFront).get(0);
+        int colOfFrontHero = getHeroPosition(heroInFront).get(1);
 
-        // one hero already in lane
-        if (numHerosInTheLane==1) {
-            heroPositions.set(heroId, Arrays.asList(otherHeroRow, 3*lane+1));
-        }
-
-        // both heros already in lane
-        if (numHerosInTheLane == 2) {
-            if (otherHeroRow+1>=numOfRows) {
-                return;
+        // setting where to teleport
+        int rowToTeleport = rowOfFrontHero;
+        int colToTeleport = colOfFrontHero;
+        if (sideToTeleport == 1) {
+            rowToTeleport += 1;
+        }else{
+            if (colOfFrontHero%3 == 0) {
+                colToTeleport += 1;
+            }else{
+                colToTeleport -= 1;
             }
-            heroPositions.set(heroId, Arrays.asList(otherHeroRow+1, 3*lane));
         }
+        heroPositions.set(heroId, Arrays.asList(rowToTeleport, colToTeleport));
 
         // add hero to new tile
         updateHeroGrid(heroId, true);

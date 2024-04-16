@@ -189,6 +189,16 @@ public class LegendsOfValor extends RPGGame {
             }
 
             // teleport
+            if (userInput.equalsIgnoreCase("t")) {
+                int lane = selectLaneToTeleport();
+                int side = selectSideToTeleportTo();
+                if (!map.canTeleport(heroId, lane, side)) {
+                    Color.println(Color.RED, "Invalid teleportation! (use recall to go back)");
+                }else{
+                    map.teleport(heroId, lane, side);
+                    return false;
+                }
+            }
 
             // recall
             if(userInput.equalsIgnoreCase("r")) {
@@ -204,8 +214,25 @@ public class LegendsOfValor extends RPGGame {
         }
     }
 
+    /**
+     * takes input to select lane to teleport to
+     */
+    private int selectLaneToTeleport(){
+        int lane = InputHandler.getAnIntegerInARange("lane(left to right)", 1, NUM_OF_HEROS);
+        lane -= 1;
+        return lane;
+    }
+
+    /**
+     * select a side to where the current hero should teleport to in the given lane
+     */
+    private int selectSideToTeleportTo(){
+        int side = InputHandler.getAnIntegerInARange("side(0 to teleport beside hero, 1 to teleport behind hero)", 0, 1);
+        return side;
+    }
+
     // select a target monster
-    public Monster selectATargetMonster(List<Monster> monsters) {
+    private Monster selectATargetMonster(List<Monster> monsters) {
         // first display all the monsters in the range
         for(int i = 0; i < monsters.size(); i++) {
             monsters.get(i).displayInfo(i + 1);
@@ -217,7 +244,7 @@ public class LegendsOfValor extends RPGGame {
     }
 
     // hero attack a monster
-    public void heroAttackMonster(Hero hero, Monster monster) {
+    private void heroAttackMonster(Hero hero, Monster monster) {
         // first roll the dice
         if(RandomGenerator.checkProbability(monster.getDodge() * Monster.DODGE_RATIO)) {
             System.out.print("Oops! ");
@@ -243,7 +270,7 @@ public class LegendsOfValor extends RPGGame {
     }
 
     // get the money and experience rewards for all heroes
-    public void getRewards(int monsterLevel) {
+    private void getRewards(int monsterLevel) {
         int moneyReward = monsterLevel * MONEY_REWARD_RATIO;
         int expReward = monsterLevel * EXP_REWARD_RATIO;
 
@@ -255,7 +282,7 @@ public class LegendsOfValor extends RPGGame {
     }
 
     // manage the action of all monsters in a lane
-    public void monsterManagement(int laneId) {
+    private void monsterManagement(int laneId) {
         // first get all monsters in this lane
         List<Monster> monsters = map.getMonstersInLane(laneId);
         // then decide the action for each monster in this lane
