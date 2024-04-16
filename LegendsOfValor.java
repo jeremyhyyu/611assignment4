@@ -130,6 +130,8 @@ public class LegendsOfValor extends RPGGame {
                 if(map.isHeroMovable(heroId, dir)) {
                     map.moveHero(heroId, dir);
                     return false;
+                }else{
+                    Color.println(Color.RED, "Invalid move!");
                 }
             }
 
