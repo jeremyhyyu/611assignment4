@@ -212,7 +212,10 @@ public class LegendsOfValorMap extends Map {
      */
     public void removeMonster(int lane, int monsterInLane){
         updateMonsterGrid(lane, monsterInLane, false);
+        Monster deadMonster = getMonster(lane, monsterInLane);
+        monsters.remove(deadMonster);
         monsterPositions.get(lane).remove(monsterInLane);
+        
     }
 
     // can the hero be movable in the given direction
@@ -355,15 +358,23 @@ public class LegendsOfValorMap extends Map {
     // delete monster from the list if the hp of montser is lower or equal to 0, return the level of the monster deleted
     public int monsterRecyler() {
         int level = 0;
-        for(Monster monster: monsters) {
-            if(monster.getHp() <= 0) {
-                System.out.print("Monster ");
-                Color.print(Color.RED, monster.getName());
-                System.out.println(" is defeated!");
-                level = monster.getLevel();
-                monsters.remove(monster);
-                break;
+        int laneToRemoveMonsFrom = -1;
+        int monsterNumToRemove = -1;
+        for (int lane = 0; lane < monsterPositions.size(); lane++) {
+            for (int monsterInLane = 0; monsterInLane < monsterPositions.get(lane).size(); monsterInLane++) {
+                Monster monster = getMonster(lane, monsterInLane);
+                if(monster.getHp() <= 0) {
+                    System.out.print("Monster ");
+                    Color.print(Color.RED, monster.getName());
+                    System.out.println(" is defeated!");
+                    level = monster.getLevel();
+                    laneToRemoveMonsFrom = lane;
+                    monsterNumToRemove = monsterInLane;
+                }
             }
+        }
+        if (laneToRemoveMonsFrom != -1) {
+            removeMonster(laneToRemoveMonsFrom, monsterNumToRemove);
         }
         return level;
     }
