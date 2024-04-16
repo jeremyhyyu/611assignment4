@@ -223,7 +223,7 @@ public class LegendsOfValorMap extends Map {
         // if crossing a monster
         if (direction == UP) {
             int lane = getHeroLane(heroId);
-            if(getHeroPosition(heroId).get(0) == getMonsterPosition(lane, 0).get(0)){
+            if(numOfMonstersInLane(lane) >= 1 && getHeroPosition(heroId).get(0) == getMonsterPosition(lane, 0).get(0)){
                 return false;
             }
         }
