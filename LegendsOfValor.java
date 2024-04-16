@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LegendsOfValor extends RPGGame {
     // class variables
-    public static final int INTERVAL_TO_GENERATE_MONSTERS = 10; // new monsters are generated every 10 rounds
+    public static final int INTERVAL_TO_GENERATE_MONSTERS = 6; // new monsters are generated every 6 rounds
     public static final int NUM_OF_HEROS = 3;
     public static final int NUM_OF_ROWS = 8;
     public static final int MONEY_REWARD_RATIO = 500;
@@ -45,9 +45,10 @@ public class LegendsOfValor extends RPGGame {
         generateMonsters();
     }
 
-    // generate monsters, call this method every 10 rounds
+    // generate monsters, call this method every n rounds
     public void generateMonsters() {
         for(int i = 0; i < party.getHeros().size(); i++) {
+            if (map.monsterAlreadyInNexus(i)) continue;
             map.addMonster(i, MonsterFactory.generateMonsterByHeroLevel(party.getHighestLevel()));
         }
     }

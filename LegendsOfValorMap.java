@@ -309,6 +309,16 @@ public class LegendsOfValorMap extends Map {
         return result;
     }
 
+    // returns true if there is a monster at the nexus of the given lane
+    public boolean monsterAlreadyInNexus(int lane){
+        for (int i = 0; i < monsterPositions.get(lane).size(); i++) {
+            if (monsterPositions.get(lane).get(i) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // get the heroids in a current lane
     private List<Integer> getHerosInLane(int lane){
         List<Integer> heroIds = new ArrayList<>();
