@@ -1,14 +1,19 @@
+/*
+ * This is the class for the game legends of valor, the rule of the game and the in-game operations are defined in this class.
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LegendsOfValor extends RPGGame {
     // class variables
-    public static final int INTERVAL_TO_GENERATE_MONSTERS = 6; // new monsters are generated every 6 rounds
+    public static final int INTERVAL_TO_GENERATE_MONSTERS = 8; // new monsters are generated every 6 rounds
     public static final int NUM_OF_HEROS = 3;
     public static final int NUM_OF_ROWS = 8;
     public static final int MONEY_REWARD_RATIO = 500;
     public static final int EXP_REWARD_RATIO = 2;
+    public static final double RECOVERY_RATE = 0.1;
     // attributes
     private PartyLegends party;
     private LegendsOfValorMap map;
@@ -97,6 +102,9 @@ public class LegendsOfValor extends RPGGame {
                     return;
                 }
             }
+
+            // all heroes regain hp and mp
+            regainHpMp();
             
             // generate new monsters every few rounds
             roundCnt++;
@@ -324,6 +332,14 @@ public class LegendsOfValor extends RPGGame {
                     monster.attack(herosInRange.get(target - 1));
                 }
             }
+        }
+    }
+
+    // regain hp and mp for heroes
+    private void regainHpMp() {
+        for(Hero hero: party.getHeros()) {
+            hero.getAttribute().setCurrHp(hero.getAttribute().getCurrHp() + (int)(hero.getAttribute().getHp() * RECOVERY_RATE));
+            hero.getAttribute().setCurrMp(hero.getAttribute().getCurrMp() + (int)(hero.getAttribute().getMp() * RECOVERY_RATE));
         }
     }
 }

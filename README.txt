@@ -2,22 +2,30 @@
  - Name: Heyang Yu
  - BUID: U26187790
 
+ - Name: Nihal Poosa
+ - BUID: U77692324
+
 
 ## File Information
- - I've included the file information in the header of all java source file, so I skip this part
+ - We've included the file information in the header of all java source file, so this part is skipped
 
 
 ## Notes
- - Monsters and Heroes is a single player rpg game, player can create a team with multiple heros, explore the world,
- battle with monsters and level up, user can also purchase items from markets. All items purchased can be used by hero 
- who bought it.
+ - Legends of valor is a multi-player(hero) moba game, the goal of hero team is to reach the nexus of monster team and 
+ prevent their nexus to be accessed by monsters.
 
- - Design Pattern Used: I used Factory pattern in this project, it decoupling user from the concrete classes, allow users
- to generate instance more easily, I used this for Hero, Monster and Market creation.
+ - Design pattern we used in this assignment:
+ 1. Factory Pattern: We implemented factory pattern and use factories to generate heroes, monsters, markets and grids.
+ 2. Strategy Pattern: As potion and spell are both "usable" so we implemented strategy pattern to encapsulate the behavior
+ "use" and create different subclass for it, then attatch different use behavior to different items.
+ 3. Observer Pattern: In this game hero gets buffed when locating on different terrians, so we implemented observer pattern
+ here to make hero the observer and the map(game board) to be the subject, every time hero moves to a new gird in this game,
+ the map will notify which grid hero is on, this can decouple the hero class and the map class.
+ 4. Singleton Pattern: For grid factory, we used singleton pattern to ensure only one instance is created.
 
 
 ## Citations
- - https://chat.openai.com, I finished the Color class with the help of chatGPT.
+ - https://chat.openai.com, we finished the Color class with the help of chatGPT.
 
 
 ## How to compile and run
@@ -28,205 +36,252 @@
 
 
 ## Input/Output Example
- - In this part, I will only demo part of the functionalities to avoid the out put be too long
+ - In this part, we will only demo part of the functionalities to avoid the output to be too long
  - basic inputs:
  <wasd>: move
  <h>: check hero stats
- <i>: check inventory and use items
- <m>: enter the market
- <r>: refresh the map or the markets
+ <p>: check and consume potions
+ <m>: enter the market, only allowed when hero is in the nexus
+ <r>: recall(go back to nexus), in the market menu, this can be used to refresh item list
  <q>: quit/cancel/return
- <number>: select item or target.
+ <c>: check weapon/armor list and change weapon/armor
+ <g>: show the game info, including the rule of the game and the meaning of grids with different color.
+ <j>: select a target monster in range and attack it using the weapon, you cannot attack without a weapon
+ <k>: select a spell in inventory and select a monster in range to attack monster with this spell
+ <t>: teleport to another lane, you can choose to teleport to the side of hero or the back of hero
 
-(base) yuheyang@yuheyangdeMacBook-Air Asg4 % javac *.java
-(base) yuheyang@yuheyangdeMacBook-Air Asg4 % java Main   
-Which game do you want to play? 1: Monsters and Heros; Q: quit
-Please input your choice: 1
-Input an integer within 5-9 as the side length: 5
-How many heros do you want in your party?
-Input an integer within 1-3 as the number of heros: 1
-Please select the type of your hero 1. 1: Warrior; 2: Sorcerer; 3: Paladin.
-Input an integer within 1-3 as the type of hero: 1
-Please select your hero 1.
-No.   Name                 Mana       Strength   Agility    Dexterity  Starting Money Starting Exp
-1     Gaerdal Ironhand     100        700        500        600        1354           7         
-2     Sehanine Monnbow     600        700        800        500        2500           8         
-3     Muamman Duathall     300        900        500        750        2546           6         
-4     Flandal Steelskin    200        750        650        700        2500           7         
-5     Undefeated Yoj       400        800        400        700        2500           7         
-6     Eunoia Cyn           400        700        800        600        2500           6         
-Input an integer within 1-6 as the hero you select: 1
-+--+--+--+--+--+
-|//|M |M |H |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |  |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: s
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |H |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |  |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: m
-Welcome Gaerdal_Ironhand!
-+----------------------------------+
-Which action do you want to take?
-1. Buying items
-2. Selling items
-q: quit
-Your choice is: 1
-1: Name: Thunder_Blast
-        Type: Lightning Spell
-        Price: 750
-        Level: 4
-        Damage: 950
-        Mana Cost: 400
+In this demo, I first purchase and equip a weapon for each hero, then start moving forward as follows:
 
-2: Name: Strength_Potion
-        Type: Potion
-        Price: 200
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|H |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Casper
+        Type: Spirit
         Level: 1
-        Increase: 75
-        Attributes Affected: Strength
+        Health: 100
+        Damage: 100
+        Defense: 100
+        Dodge Chance: 50%
 
-3: Name: Flame_Tornado
-        Type: Fire Spell
-        Price: 700
-        Level: 4
-        Damage: 850
-        Mana Cost: 300
-
-4: Name: Healing_Potion
-        Type: Potion
-        Price: 250
-        Level: 1
-        Increase: 100
-        Attributes Affected: Health
-
-5: Name: Platinum_Shield
-        Type: Armor
-        Price: 150
-        Level: 1
-        Damage Reduction: 200
-
-6: Name: Thunder_Blast
-        Type: Lightning Spell
-        Price: 750
-        Level: 4
-        Damage: 950
-        Mana Cost: 400
-
-+----------------------------------+
-Which action do you want to take?
-1-6: Buy an item with the index
-r: Refersh the item list, 100g required.
-q: Finish buying
-You have 1354 gold
-Your choice is: 4
-1: Name: Thunder_Blast
-        Type: Lightning Spell
-        Price: 750
-        Level: 4
-        Damage: 950
-        Mana Cost: 400
-
-2: Name: Strength_Potion
-        Type: Potion
-        Price: 200
-        Level: 1
-        Increase: 75
-        Attributes Affected: Strength
-
-3: Name: Flame_Tornado
-        Type: Fire Spell
-        Price: 700
-        Level: 4
-        Damage: 850
-        Mana Cost: 300
-
-4: Name: Platinum_Shield
-        Type: Armor
-        Price: 150
-        Level: 1
-        Damage Reduction: 200
-
-5: Name: Thunder_Blast
-        Type: Lightning Spell
-        Price: 750
-        Level: 4
-        Damage: 950
-        Mana Cost: 400
-
-+----------------------------------+
-Which action do you want to take?
-1-5: Buy an item with the index
-r: Refersh the item list, 100g required.
-q: Finish buying
-You have 1104 gold
-Your choice is: q
-+----------------------------------+
-Which action do you want to take?
-1. Buying items
-2. Selling items
-q: quit
-Your choice is: q
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |H |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |  |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: s
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |H |M |
-+--+--+--+--+--+
-|  |  |  |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: s
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |  |H |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: a
-Oops! You are unlucky!
-Battle starts!
-Monsters
-+---------------------------------+
+Input an integer within 1-1 as the target: 1
+Gaerdal_Ironhand deals 45 damage to Casper
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
 1: Name: BigBad-Wolf
         Type: Exoskeleton
         Level: 1
@@ -235,216 +290,617 @@ Monsters
         Defense: 250
         Dodge Chance: 15%
 
-Heros
-+---------------------------------+
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
+Input an integer within 1-1 as the target: 1
+Rillifane_Rallathil deals 72 damage to BigBad-Wolf
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Natsunomeryu
+        Type: Dragon
         Level: 1
-        Current Experience: 7
-        HP: 100 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1104
-+----------------------------+
-Hero Gaerdal_Ironhand's turn!'
-Please input your action
-1-1: Attack the monster with corresponding index
-c: cast a spell
-p: use a potion
-e: equit a weapon or armor
-i: check stats
-Your choice: 1
-Gaerdal_Ironhand deals 30 damage to BigBad-Wolf
-BigBad-Wolf deals 15 damage to Gaerdal_Ironhand
-Monsters
-+---------------------------------+
+        Health: 100
+        Damage: 100
+        Defense: 200
+        Dodge Chance: 10%
+
+Input an integer within 1-1 as the target: 1
+Parzival deals 73 damage to Natsunomeryu
+Casper deals 10 damage to Gaerdal_Ironhand
+BigBad-Wolf deals 15 damage to Rillifane_Rallathil
+Natsunomeryu deals 10 damage to Parzival
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Casper
+        Type: Spirit
+        Level: 1
+        Health: 55
+        Damage: 100
+        Defense: 100
+        Dodge Chance: 50%
+
+Input an integer within 1-1 as the target: 1
+Oops! Casper dodged!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
 1: Name: BigBad-Wolf
         Type: Exoskeleton
         Level: 1
-        Health: 70
+        Health: 28
         Damage: 150
         Defense: 250
         Dodge Chance: 15%
 
-Heros
-+---------------------------------+
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
+Input an integer within 1-1 as the target: 1
+Oops! BigBad-Wolf dodged!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Natsunomeryu
+        Type: Dragon
         Level: 1
-        Current Experience: 7
-        HP: 95 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1104
-+----------------------------+
-Hero Gaerdal_Ironhand's turn!'
-Please input your action
-1-1: Attack the monster with corresponding index
-c: cast a spell
-p: use a potion
-e: equit a weapon or armor
-i: check stats
-Your choice: 1
-Gaerdal_Ironhand deals 30 damage to BigBad-Wolf
-The attack from BigBad-Wolf to Gaerdal_Ironhand is missed!
-Monsters
-+---------------------------------+
+        Health: 27
+        Damage: 100
+        Defense: 200
+        Dodge Chance: 10%
+
+Input an integer within 1-1 as the target: 1
+Parzival deals 73 damage to Natsunomeryu
+Monster Natsunomeryu is defeated!
+Rillifane_Rallathil level up!
+Casper deals 10 damage to Gaerdal_Ironhand
+BigBad-Wolf deals 15 damage to Rillifane_Rallathil
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Casper
+        Type: Spirit
+        Level: 1
+        Health: 55
+        Damage: 100
+        Defense: 100
+        Dodge Chance: 50%
+
+Input an integer within 1-1 as the target: 1
+Gaerdal_Ironhand deals 45 damage to Casper
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H | M|  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
 1: Name: BigBad-Wolf
         Type: Exoskeleton
         Level: 1
-        Health: 40
+        Health: 28
         Damage: 150
         Defense: 250
         Dodge Chance: 15%
 
-Heros
-+---------------------------------+
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
-        Level: 1
-        Current Experience: 7
-        HP: 100 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1104
-+----------------------------+
-Hero Gaerdal_Ironhand's turn!'
-Please input your action
-1-1: Attack the monster with corresponding index
-c: cast a spell
-p: use a potion
-e: equit a weapon or armor
-i: check stats
-Your choice: 1
-Gaerdal_Ironhand deals 30 damage to BigBad-Wolf
-BigBad-Wolf deals 15 damage to Gaerdal_Ironhand
-Monsters
-+---------------------------------+
-1: Name: BigBad-Wolf
-        Type: Exoskeleton
+Input an integer within 1-1 as the target: 1
+Rillifane_Rallathil deals 74 damage to BigBad-Wolf
+Monster BigBad-Wolf is defeated!
+Gaerdal_Ironhand level up!
+Parzival level up!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
+Casper deals 10 damage to Gaerdal_Ironhand
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Casper
+        Type: Spirit
         Level: 1
         Health: 10
+        Damage: 100
+        Defense: 100
+        Dodge Chance: 50%
+
+Input an integer within 1-1 as the target: 1
+Oops! Casper dodged!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
+Casper deals 10 damage to Gaerdal_Ironhand
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Casper
+        Type: Spirit
+        Level: 1
+        Health: 10
+        Damage: 100
+        Defense: 100
+        Dodge Chance: 50%
+
+Input an integer within 1-1 as the target: 1
+Gaerdal_Ironhand deals 49 damage to Casper
+Monster Casper is defeated!
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |  | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: BigBad-Wolf
+        Type: Exoskeleton
+        Level: 1
+        Health: 100
         Damage: 150
         Defense: 250
         Dodge Chance: 15%
 
-Heros
-+---------------------------------+
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
+Input an integer within 1-1 as the target: 1
+Rillifane_Rallathil deals 74 damage to BigBad-Wolf
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  | M|  |  | M|  |H | M|
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Natsunomeryu
+        Type: Dragon
         Level: 1
-        Current Experience: 7
-        HP: 95 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1104
-+----------------------------+
-Hero Gaerdal_Ironhand's turn!'
-Please input your action
-1-1: Attack the monster with corresponding index
-c: cast a spell
-p: use a potion
-e: equit a weapon or armor
-i: check stats
-Your choice: 1
-Gaerdal_Ironhand deals 30 damage to BigBad-Wolf
-BigBad-Wolf dead!
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |H |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: h
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
-        Level: 1
-        Current Experience: 9
-        HP: 95 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1204
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |H |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: i
-1: Name: Healing_Potion
-        Type: Potion
-        Price: 250
-        Level: 1
-        Increase: 100
-        Attributes Affected: Health
+        Health: 100
+        Damage: 100
+        Defense: 200
+        Dodge Chance: 10%
 
-+------------------------------+
-Which action do you want to take?
-1-1: Equip an equipment / Use a potion
-q: Return
-Your choice is: 1
-You've used all items in your inventory!
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |H |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: h
-1: Name: Gaerdal_Ironhand
-        Type: Warrior
+Input an integer within 1-1 as the target: 1
+Parzival deals 77 damage to Natsunomeryu
+Natsunomeryu deals 10 damage to Parzival
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H | M|
++--+--+--+--+--+--+--+--+
+|  | M|  |H | M|  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: BigBad-Wolf
+        Type: Exoskeleton
         Level: 1
-        Current Experience: 9
-        HP: 100 / 100
-        MP: 100 / 100
-        Strength: 700
-        Dexterity: 600
-        Agility: 500
-        Current Gold: 1204
-+--+--+--+--+--+
-|//|M |M |  |  |
-+--+--+--+--+--+
-|  |//|M |M |  |
-+--+--+--+--+--+
-|//|  |M |  |M |
-+--+--+--+--+--+
-|  |  |H |  |  |
-+--+--+--+--+--+
-|//|M |//|  |  |
-+--+--+--+--+--+
-<wasd> to move, <i> for inventory, <h> for hero stats, <r> to refresh map, <m> to enter the market, <q> to quit
-Please input your choice: 1
-Invalid input! Please input your choice: q
-You quited the game
-Which game do you want to play? 1: Monsters and Heros; Q: quit
+        Health: 100
+        Damage: 150
+        Defense: 250
+        Dodge Chance: 15%
+
+Input an integer within 1-1 as the target: 1
+Gaerdal_Ironhand deals 46 damage to BigBad-Wolf
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H | M|
++--+--+--+--+--+--+--+--+
+|  | M|  |H | M|  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: BigBad-Wolf
+        Type: Exoskeleton
+        Level: 1
+        Health: 26
+        Damage: 150
+        Defense: 250
+        Dodge Chance: 15%
+
+Input an integer within 1-1 as the target: 1
+Oops! BigBad-Wolf dodged!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H | M|
++--+--+--+--+--+--+--+--+
+|  | M|  |H | M|  |  |  |
++--+--+--+--+--+--+--+--+
+|H |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: Natsunomeryu
+        Type: Dragon
+        Level: 1
+        Health: 23
+        Damage: 100
+        Defense: 200
+        Dodge Chance: 10%
+
+Input an integer within 1-1 as the target: 1
+Parzival deals 77 damage to Natsunomeryu
+Monster Natsunomeryu is defeated!
+BigBad-Wolf deals 15 damage to Rillifane_Rallathil
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H | M|  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Gaerdal_Ironhand's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: BigBad-Wolf
+        Type: Exoskeleton
+        Level: 1
+        Health: 54
+        Damage: 150
+        Defense: 250
+        Dodge Chance: 15%
+
+Input an integer within 1-1 as the target: 1
+Oops! BigBad-Wolf dodged!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H | M|  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Rillifane_Rallathil's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: j
+1: Name: BigBad-Wolf
+        Type: Exoskeleton
+        Level: 1
+        Health: 26
+        Damage: 150
+        Defense: 250
+        Dodge Chance: 15%
+
+Input an integer within 1-1 as the target: 1
+Rillifane_Rallathil deals 74 damage to BigBad-Wolf
+Monster BigBad-Wolf is defeated!
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |H |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |H |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|H | M|  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+
+Hero Parzival's turn!
+<wasd> to move, <c> for change weapon or armor, <p> for consume potion, <m> for shopping, <g> for game info, <h> for hero stats, <j> to attack, <k> to cast a spell, <t> to teleport, <r> to recall, <q> to quit
+Your choice is: w
+Congratulations! Hero team wins!
+Which game do you want to play? 1: Monsters and Heros; 2: Legends of Valor; Q: quit
 Please input your choice: q
 Bye!
-(base) yuheyang@yuheyangdeMacBook-Air Asg4 % z
+(base) yuheyang@crc-dot1x-nat-10-239-211-194 611assignment4 % 
